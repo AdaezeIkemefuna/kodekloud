@@ -35,6 +35,10 @@ kodekloud-100/
 1. Create a new day folder:
 
    ```bash
+   # Only specific tracks
+   ./new-day.sh 2 devops azure kubernetes
+
+   # All 5 tracks
    ./new-day.sh 2
    ```
 
