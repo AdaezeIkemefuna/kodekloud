@@ -1,0 +1,34 @@
+# Credentials and secrets
+*.pem
+*.key
+*credentials*
+*secret*
+.env
+
+# AWS
+*.aws/
+
+# Terraform
+*.tfvars
+*.tfstate*
+.terraform/
+.terraform.lock.hcl
+
+# Kubernetes
+kubeconfig*
+*.kubeconfig
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Editor files
+*.swp
+*.swo
+*~
+.vscode/
+.idea/
+
+# Temp files
+*.tmp
+*.log
