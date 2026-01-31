@@ -1,16 +1,28 @@
 #!/bin/bash
 
-# new-day.sh - Create a new day folder from template
+# new-day.sh - Create a new day folder with specific tracks
 
 if [ -z "$1" ]; then
-    echo "Usage: ./new-day.sh <day-number>"
-    echo "Example: ./new-day.sh 2"
+    echo "Usage: ./new-day.sh <day-number> [tracks...]"
+    echo "Tracks: devops, azure, aws, kubernetes, terraform"
+    echo ""
+    echo "Examples:"
+    echo "  ./new-day.sh 2 devops azure           # Only DevOps and Azure"
+    echo "  ./new-day.sh 3 kubernetes terraform   # Only K8s and Terraform"
+    echo "  ./new-day.sh 4                        # All 5 tracks"
     exit 1
 fi
 
 DAY_NUM=$1
+shift
+TRACKS=("$@")
 DAY_FOLDER="day-$DAY_NUM"
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+
+# If no tracks specified, use all
+if [ ${#TRACKS[@]} -eq 0 ]; then
+    TRACKS=("devops" "azure" "aws" "kubernetes" "terraform")
+fi
 
 # Check if folder already exists
 if [ -d "$SCRIPT_DIR/$DAY_FOLDER" ]; then
@@ -18,27 +30,20 @@ if [ -d "$SCRIPT_DIR/$DAY_FOLDER" ]; then
     exit 1
 fi
 
-# Copy template
-cp -r "$SCRIPT_DIR/templates/day-template" "$SCRIPT_DIR/$DAY_FOLDER"
+# Create day folder
+mkdir -p "$SCRIPT_DIR/$DAY_FOLDER"
 
-# Replace 'Day X' with actual day number in all files
-for file in "$SCRIPT_DIR/$DAY_FOLDER"/*.md; do
-    sed -i "s/Day X/Day $DAY_NUM/g" "$file"
+# Copy only requested templates
+for track in "${TRACKS[@]}"; do
+    template="$SCRIPT_DIR/templates/day-template/${track}-task.md"
+    if [ -f "$template" ]; then
+        cp "$template" "$SCRIPT_DIR/$DAY_FOLDER/"
+        sed -i "s/Day X/Day $DAY_NUM/g" "$SCRIPT_DIR/$DAY_FOLDER/${track}-task.md"
+        echo "✅ Created ${track}-task.md"
+    else
+        echo "⚠️  Template not found: ${track}-task.md"
+    fi
 done
 
-echo "✅ Created $DAY_FOLDER successfully!"
 echo ""
-echo "📁 Files created:"
-echo "   - $DAY_FOLDER/devops-task.md      🐧"
-echo "   - $DAY_FOLDER/azure-task.md       ☁️"
-echo "   - $DAY_FOLDER/aws-task.md         🟠"
-echo "   - $DAY_FOLDER/kubernetes-task.md  ☸️"
-echo "   - $DAY_FOLDER/terraform-task.md   🏗️"
-echo ""
-echo "💡 Tip: Delete the task files you don't use today"
-echo ""
-echo "Next steps:"
-echo "   cd $DAY_FOLDER"
-echo "   # Edit your task files"
-echo "   # Delete unused templates"
-echo "   git add . && git commit -m \"Day $DAY_NUM: <description>\""
+echo "📁 Created $DAY_FOLDER with ${#TRACKS[@]} track(s)"
