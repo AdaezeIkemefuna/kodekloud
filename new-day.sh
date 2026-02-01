@@ -35,7 +35,7 @@ mkdir -p "$SCRIPT_DIR/$DAY_FOLDER"
 
 # Copy only requested templates
 for track in "${TRACKS[@]}"; do
-    template="$SCRIPT_DIR/templates/day-template/${track}-task.md"
+    template="$SCRIPT_DIR/templates/${track}-task.md"
     if [ -f "$template" ]; then
         cp "$template" "$SCRIPT_DIR/$DAY_FOLDER/"
         sed -i "s/Day X/Day $DAY_NUM/g" "$SCRIPT_DIR/$DAY_FOLDER/${track}-task.md"
