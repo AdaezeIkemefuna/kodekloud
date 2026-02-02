@@ -1,4 +1,4 @@
-# Day X - DevOps Task 🐧
+# Day X - DevOps Task
 
 ## Task Description
 
